@@ -106,3 +106,39 @@ lowsleep3pluschildren = nls97.loc[(nls97.nightlyhrssleep<=4) & (nls97.childathom
 lowsleep3pluschildren = nls97.loc[(nls97.nightlyhrssleep<=4) & (nls97.childathome>=3), ['nightlyhrssleep','childathome']]
 ```
 
+## Generating frequencies for categorical variables
+Frequency distributions (crosstabs) can help you understand and explore a DataFrame. 
+The more you do, the better you will understand the data.
+
+```python
+# show the names of columns with category data type and check for number of missings
+catcols = nls97.select_dtypes(include=["category"]).columns
+nls97[catcols].isnull().sum()
+
+# show counts for each category value
+nls97.maritalstatus.value_counts()
+nls97.maritalstatus.value_counts(sort=False)
+nls97.maritalstatus.value_counts(sort=False, normalize=True) # percentage
+
+# do percentages for all government responsibility variables
+nls97.filter(like="gov").apply(pd.value_counts, normalize=True)
+
+# do percentages for all government responsibility variables for people who are married
+nls97[nls97.maritalstatus=="Married"].filter(like="gov").apply(pd.value_counts, normalize=True)
+```
+
+#### Saving frequencies of all categorical values
+```python
+# do frequencies and percentages for all category variables in data frame
+freqout = open('views/frequencies.txt', 'w') 
+for col in nls97.select_dtypes(include=["category"]):
+  print(col, "----------------------", "frequencies",
+  nls97[col].value_counts(sort=False),"percentages",
+  nls97[col].value_counts(normalize=True, sort=False),
+  sep="\n\n", end="\n\n\n", file=freqout)
+
+freqout.close()
+```
+
+
+
