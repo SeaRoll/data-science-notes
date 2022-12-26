@@ -33,6 +33,62 @@ columns_with_na_dropped = nfl_data.dropna(axis=1)
 subset_nfl_data.fillna(0)
 ```
 
+### From intermediate machine learning
+
+1) A Simple Option: Drop Columns with Missing Values
+The simplest option is to drop columns with missing values.
+
+2) A Better Option: Imputation
+Imputation fills in the missing values with some number. For instance, we can fill in the mean value along each column.
+The imputed value won't be exactly right in most cases, but it usually leads to more accurate models 
+than you would get from dropping the column entirely.
+
+3) An Extension To Imputation
+Imputation is a common method for handling missing values, 
+but imputed values may not always be accurate and missing 
+values may indicate unique characteristics in the data. In 
+these cases, considering which values were originally 
+missing may improve model performance.
+
+#### Approach 1 (Drop Columns with Missing Values)
+
+```python
+cols_with_missing = [col for col in X_train.columns
+                     if X_train[col].isnull().any()]
+reduced_X_train = X_train.drop(cols_with_missing, axis=1)
+```
+
+#### Approach 2 (Imputation)
+
+```python
+from sklearn.impute import SimpleImputer
+
+# Imputation
+my_imputer = SimpleImputer()
+imputed_df = pd.DataFrame(my_imputer.fit_transform(df))
+
+# Imputation removed column names; put them back
+imputed_df.columns = df.columns
+```
+
+#### Approach 3 (Extension to imputation)
+
+```python
+
+df_plus = df.copy()
+
+for col in cols_with_missing:
+    X_train_plus[col + '_was_missing'] = X_train_plus[col].isnull()
+    X_valid_plus[col + '_was_missing'] = X_valid_plus[col].isnull()
+
+# Imputation
+my_imputer = SimpleImputer()
+imputed_df_plus = pd.DataFrame(my_imputer.fit_transform(df_plus))
+
+# Imputation removed column names; put them back
+imputed_df_plus.columns = df_plus.columns
+```
+
 ## Scaling and normalization
 
 ```python
