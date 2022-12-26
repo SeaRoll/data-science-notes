@@ -89,6 +89,23 @@ normalized_data = stats.boxcox(original_data)
 
 ![Screen Shot 2022-12-26 at 20 24 44](https://user-images.githubusercontent.com/26680151/209578220-04954fa8-c4c3-45bf-bc99-da5d5f610330.png)
 
+## Parsing Dates
+
+```python
+# create a new column, date_parsed, with the parsed dates
+landslides['date_parsed'] = pd.to_datetime(landslides['date'], format="%m/%d/%y")
+
+# use this if there are multiple date formats in a column
+landslides['date_parsed'] = pd.to_datetime(landslides['Date'], infer_datetime_format=True)
+
+# get the day of the month from the date_parsed column
+day_of_month_landslides = landslides['date_parsed'].dt.day
+```
+
+
+
+
+
 
 
 
