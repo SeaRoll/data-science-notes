@@ -158,6 +158,70 @@ landslides['date_parsed'] = pd.to_datetime(landslides['Date'], infer_datetime_fo
 day_of_month_landslides = landslides['date_parsed'].dt.day
 ```
 
+## Handling Categorical Values
+1) **Drop Categorical Variables**
+The easiest approach to dealing with categorical variables. but worse if useful info exists
+
+2) **Ordinal Encoding**
+Ordinal encoding assigns each unique value to a different integer. 
+This approach assumes an ordering of the categories: "Never" (0) 
+< "Rarely" (1) < "Most days" (2) < "Every day" (3). Ordinal 
+variables have a clear ordering in their categories and work 
+well with tree-based models when ordinal encoded.
+
+3) **One-Hot Encoding**
+One-hot encoding creates separate columns for each unique value in a categorical variable and assigns a value of 1 in the corresponding column for each row in the original dataset.
+
+```python
+# Get list of categorical variables
+s = (X_train.dtypes == 'object')
+object_cols = list(s[s].index)
+```
+
+#### Approach 1. Drop categorical columns
+```python
+# dropping all columns with object
+dropped_df = df.select_dtypes(exclude=['object'])
+```
+
+#### Approach 2. Ordinal encoding
+```python
+# Make copy to avoid changing original data 
+label_X_train = X_train.copy()
+label_X_valid = X_valid.copy()
+
+# Apply ordinal encoder to each column with categorical data
+ordinal_encoder = OrdinalEncoder()
+label_X_train[object_cols] = ordinal_encoder.fit_transform(X_train[object_cols])  # for training data
+label_X_valid[object_cols] = ordinal_encoder.transform(X_valid[object_cols])      # for validation data
+```
+
+#### Approach 3. One-Hot encoder
+```python
+from sklearn.preprocessing import OneHotEncoder
+
+# Apply one-hot encoder to each column with categorical data
+OH_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
+OH_cols_train = pd.DataFrame(OH_encoder.fit_transform(X_train[object_cols]))      # for training data
+OH_cols_valid = pd.DataFrame(OH_encoder.transform(X_valid[object_cols]))          # for validation data
+
+# One-hot encoding removed index; put it back
+OH_cols_train.index = X_train.index
+OH_cols_valid.index = X_valid.index
+
+# Remove categorical columns (will replace with one-hot encoding)
+num_X_train = X_train.drop(object_cols, axis=1)
+num_X_valid = X_valid.drop(object_cols, axis=1)
+
+# Add one-hot encoded columns to numerical features
+OH_X_train = pd.concat([num_X_train, OH_cols_train], axis=1) # processed train data
+OH_X_valid = pd.concat([num_X_valid, OH_cols_valid], axis=1) # processed valid data
+```
+
+
+
+
+
 
 
 
