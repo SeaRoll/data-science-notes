@@ -45,5 +45,5 @@ my_model.fit(train_X, train_y,
 ```python
 rf_predictions = rf_model.predict(val_X)
 mae = mean_absolute_error(rf_predictions, val_y)
-print(f"Mean Absolute Error: {mae * 100}%")
+print(f"Mean Absolute Error: {mae}")
 ```
