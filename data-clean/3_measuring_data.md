@@ -81,3 +81,28 @@ analysisnums.info()
 nls97 = nls97[demoadult + demo + highschoolrecord + govresp + weeksworked + colenr]
 ```
 
+## Selecting rows
+```python
+# use slicing to select a few rows
+nls97[1000:1004].T
+nls97[1000:1004:2].T
+
+# select a few rows using loc (by id) and iloc (by index)
+nls97.loc[[195884,195891,195970]].T
+nls97.loc[195884:195970].T
+nls97.iloc[[0]].T
+nls97.iloc[[0,1,2]].T
+
+nls97.nightlyhrssleep.quantile(0.05)    # how many hrs lowest 5% slept
+nls97.nightlyhrssleep.count()           # out of how many
+
+# select rows where column was less or equal than 4
+lowsleep = nls97.loc[nls97.nightlyhrssleep<=4]
+
+# multiple conditions
+lowsleep3pluschildren = nls97.loc[(nls97.nightlyhrssleep<=4) & (nls97.childathome>=3)]
+
+# select rows based on multiple conditions and also select columns
+lowsleep3pluschildren = nls97.loc[(nls97.nightlyhrssleep<=4) & (nls97.childathome>=3), ['nightlyhrssleep','childathome']]
+```
+
