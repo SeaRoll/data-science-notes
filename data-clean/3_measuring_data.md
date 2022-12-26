@@ -34,6 +34,50 @@ nls97.info()                              # get information of each column (non-
 nls97.head(2).T                           # show first two rows as a list (instead of column)
 nls97.sample(2, random_state=1).T         # can also do this to get random sample in the table
 ```
+## Selecting and organizing columns
 
+We want to Focus on relevant variables and group or limit columns according to their 
+relationships or importance when cleaning or analyzing data to avoid confusion.
 
+```python
+# swap all object datatypes to category.
+# read more on https://stackoverflow.com/questions/30601830/when-to-use-category-rather-than-object
+# on why it is used.
+nls97.loc[:, nls97.dtypes == 'object'] = \
+  nls97.select_dtypes(['object']). \
+  apply(lambda x: x.astype('category'))
+```
+
+#### Selecting single column
+
+```python
+analysisdemo = nls97['gender']    # returns a series
+analysisdemo = nls97[['gender']]  # returns a dataframe
+```
+
+#### Selecting multiple columns
+```python
+analysisdemo = nls97[['gender', 'maritalstatus', 'highestgradecompleted']]  # select three columns (returns dataframe)
+```
+
+#### Selecting column that are like a name
+```python
+analysiswork = nls97.filter(like="weeksworked") # returns a dataframe of all columns with name like that
+```
+
+#### Selecting columns based on data
+```python
+# select based on dtype category
+analysiscats = nls97.select_dtypes(include=["category"])
+analysiscats.info()
+
+# select based on dtype number
+analysisnums = nls97.select_dtypes(include=["number"])
+analysisnums.info()
+```
+
+#### Merge list of keys after each other (like sorting columns)
+```python
+nls97 = nls97[demoadult + demo + highschoolrecord + govresp + weeksworked + colenr]
+```
 
