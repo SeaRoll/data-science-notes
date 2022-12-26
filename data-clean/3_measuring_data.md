@@ -140,5 +140,5 @@ for col in nls97.select_dtypes(include=["category"]):
 freqout.close()
 ```
 
-
+## Generating summary statistics for continuous variables
 
