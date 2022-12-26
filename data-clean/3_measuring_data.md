@@ -142,3 +142,16 @@ freqout.close()
 
 ## Generating summary statistics for continuous variables
 
+```python
+# get descriptive statistics on the cumulative values
+totvars = ['location','total_cases','total_deaths',
+  'total_cases_pm','total_deaths_pm']
+covidtotals[totvars].quantile(np.arange(0.0, 1.1, 0.1))
+
+# view the distribution of total cases
+plt.hist(covidtotals['total_cases']/1000, bins=12)
+plt.title("Total Covid Cases (in thousands)")
+plt.xlabel('Cases')
+plt.ylabel("Number of Countries")
+plt.show()
+```
